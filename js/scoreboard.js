@@ -33,57 +33,59 @@ app.controller("scoreboardController", ['$scope', function($scope) {
     
     $scope.league = [];
     
-    $scope.leagueMiddle = [];
-
     var winnerName='';
     
     $scope.results.forEach(element => {
         if (element.score_1>element.score_2){
             winnerName=element.player_1;
+
         }else{
             winnerName=element.player_2;
         }
-        $scope.leagueMiddle.push(winnerName);
-        console.log(winnerName);
+        $scope.league.push(winnerName);
+        // console.log(winnerName);
     });
 
-    console.log($scope.leagueMiddle);
-
-    $scope.players.forEach(element => {
-        element.point = 0;
-        $scope.league.push(element);
-    });
     console.log($scope.league);
 
+    // $scope.players.forEach(element => {
+    //     element.point = 0;
+    //     $scope.league.push(element);
+    // });
+    // console.log($scope.league);
 
 
-    $scope.leagueDisplay = [];
-    $scope.league.forEach(element => {
-        $scope.leagueMiddle.forEach(item =>{
+
+    function processLeague(){
+        $scope.players.forEach(element => {
+        element.point = 0;
+        $scope.league.forEach(item =>{
             if (item == element.name){
                 element.point +=  2;
             }
         })
-        $scope.leagueDisplay.push(element);
-    });
-    console.log($scope.leagueDisplay);
+        // $scope.leagueDisplay.push(element);
+        });
+        console.log($scope.players);
+        
+        $scope.players.sort((a,b)=>{
+            return b.point-a.point;
+        });
+        $scope.players.sort((a,b)=>{
+            if (a.name.includes('CEO')){
+                a.point=0;
+                return 1;
+            } else if (b.name.includes('CEO')){
+                b.point=0;
+                return -1;
+            }else{
+                return 0;
+            }
+
+        });
+    }
     
-    $scope.leagueDisplay.sort((a,b)=>{
-        return b.point-a.point;
-    })
-    $scope.leagueDisplay.sort((a,b)=>{
-        if (a.name.includes('CEO')){
-            a.point=0;
-            return 1;
-        } else if (b.name.includes('CEO')){
-            b.point=0;
-            return -1;
-        }else{
-            return 0;
-        }
-
-    })
-
+    processLeague();
 
     $scope.errorMessage = "";
     $scope.error = false;
@@ -104,6 +106,15 @@ app.controller("scoreboardController", ['$scope', function($scope) {
             $scope.error = false;
             result.id = $scope.results.length + 1;
             $scope.results.push(result);
+
+            if (result.score_1>result.score_2){
+                winnerName=result.player_1;
+    
+            }else{
+                winnerName=result.player_2;
+            }
+            $scope.league.push(winnerName);
+            processLeague();
             $scope.result = {};
         }
     };
@@ -115,7 +126,5 @@ app.controller("scoreboardController", ['$scope', function($scope) {
         $scope.players.push(player);
         $scope.player = {};
         console.dir($scope.players);
-
     };
-
 }]);
