@@ -35,6 +35,7 @@ app.controller("scoreboardController", ['$scope', function($scope) {
     
     var winnerName='';
     
+
     $scope.results.forEach(element => {
         if (element.score_1>element.score_2){
             winnerName=element.player_1;
